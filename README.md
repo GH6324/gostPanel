@@ -34,18 +34,31 @@ docker-compose up -d
 ```
 
 **方式 B: 二进制脚本 (原生部署)**
-适用于没有 Docker 的 Linux 服务器（要求内存 > 1G）：
+适用于没有 Docker 的 Linux 服务器（要求内存 > 512MB）：
+
+**默认安装 (端口 39100):**
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/apicoder-peng/gostPanel/master/scripts/install_panel.sh)
 ```
 
-> 面板默认访问地址：`http://服务器IP:39100` (账号密码见下文)
+**自定义端口 (例如 8080):**
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/apicoder-peng/gostPanel/master/scripts/install_panel.sh) 8080
+```
+或者
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/apicoder-peng/gostPanel/master/scripts/install_panel.sh) install --port 8080
+```
 
-### 2. 初始登录
-- **账号**: `admin`
-- **密码**: `admin123`
-*(登录后请立即在后台修改)*
+**卸载面板:**
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/apicoder-peng/gostPanel/master/scripts/install_panel.sh) uninstall
+```
 
+**卸载节点:**
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/apicoder-peng/gostPanel/master/scripts/install_node.sh) uninstall
+```
 
 ---
 
