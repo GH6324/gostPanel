@@ -91,6 +91,16 @@ function install_panel() {
         else
             warn "配置文件已存在，跳过覆盖"
         fi
+        
+        # 替换端口 (如果有指定)
+        local CUSTOM_PORT="$1"
+        if [ -n "$CUSTOM_PORT" ]; then
+            info "正在根据参数修改端口为: $CUSTOM_PORT"
+            # 替换 config.yaml 中的端口配置
+            if [ -f "$CONFIG_DIR/config/config.yaml" ]; then
+                sed -i "s/port: \":.*\"/port: \":$CUSTOM_PORT\"/g" "$CONFIG_DIR/config/config.yaml"
+            fi
+        fi
     fi
 
     # 清理临时目录
@@ -120,7 +130,21 @@ EOF
     systemctl start "$APP_NAME"
 
     info "Gost Panel 安装完成并已启动！"
-    systemctl status gost-panel
+    systemctl status gost-panel --no-pager
+    
+    # 获取最终端口
+    FINAL_PORT=$(grep "port:" "$CONFIG_DIR/config/config.yaml" | awk -F'"' '{print $2}' | sed 's/://')
+    [ -z "$FINAL_PORT" ] && FINAL_PORT="39100"
+    
+    # 获取本机外网IP
+    PUBLIC_IP=$(curl -s https://api.ipify.org || curl -s ifconfig.me || echo "127.0.0.1")
+    
+    echo -e "\n${GREEN}==============================================${NC}"
+    echo -e "   Gost Panel 安装成功！"
+    echo -e "   访问地址: http://${PUBLIC_IP}:${FINAL_PORT}"
+    echo -e "   账号: admin"
+    echo -e "   密码: admin123"
+    echo -e "${GREEN}==============================================${NC}\n"
 }
 
 function uninstall_panel() {
@@ -135,17 +159,30 @@ function uninstall_panel() {
 }
 
 # Main
-ACTION=${1:-install}
+ACTION="install"
+PORT=""
+
+# Check arguments
+if [ -n "$1" ]; then
+    # If first arg is a number, assume it's the port and action is install
+    if [[ "$1" =~ ^[0-9]+$ ]]; then
+        PORT="$1"
+    elif [ "$1" == "install" ]; then
+        ACTION="install"
+        PORT="$2"
+    elif [ "$1" == "uninstall" ]; then
+        ACTION="uninstall"
+    else
+        echo "用法: $0 [port] 或 $0 [install|uninstall] [port]"
+        exit 1
+    fi
+fi
 
 case $ACTION in
     install)
-        install_panel
+        install_panel "$PORT"
         ;;
     uninstall)
         uninstall_panel
-        ;;
-    *)
-        echo "用法: $0 [install|uninstall]"
-        exit 1
         ;;
 esac
