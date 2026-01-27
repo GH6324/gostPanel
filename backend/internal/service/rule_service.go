@@ -327,11 +327,7 @@ func (s *RuleService) startTunnelRule(rule *model.GostRule, node *model.GostNode
 
 	// 确保隧道已启动
 	if tunnel.Status != model.TunnelStatusRunning {
-		if err = s.tunnelService.Start(tunnel.ID, userID, username, ip, userAgent); err != nil {
-			return err
-		}
-		// 重新获取隧道状态
-		tunnel, _ = s.tunnelRepo.FindByID(*rule.TunnelID)
+		return errors.ErrTunnelNotRunning
 	}
 
 	// 检查隧道是否有 Chain ID

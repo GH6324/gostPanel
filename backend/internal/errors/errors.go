@@ -168,14 +168,6 @@ var (
 	ErrEntryNodeNotFound = New(10205, "入口节点不存在", http.StatusNotFound)
 	// ErrExitNodeNotFound 出口节点不存在
 	ErrExitNodeNotFound = New(10206, "出口节点不存在", http.StatusNotFound)
-	// ErrPortInUse 端口已被使用
-	ErrPortInUse = New(10207, "端口已被使用", http.StatusBadRequest)
-	// ErrExitNodeNoRelayPort 出口节点未配置 Relay 端口
-	ErrExitNodeNoRelayPort = New(10208, "出口节点未配置 Relay 端口，请先在节点设置中配置", http.StatusBadRequest)
-	// ErrTunnelStartFailed 启动隧道失败
-	ErrTunnelStartFailed = New(10210, "启动隧道失败", http.StatusInternalServerError)
-	// ErrTunnelServiceCreateFailed 创建隧道服务失败
-	ErrTunnelServiceCreateFailed = New(10212, "创建隧道服务失败", http.StatusInternalServerError)
-	// ErrTunnelObserverCreateFailed 创建观察器失败
-	ErrTunnelObserverCreateFailed = New(10213, "创建观察器失败", http.StatusInternalServerError)
+	// ErrTunnelNotRunning 隧道未运行
+	ErrTunnelNotRunning = New(10207, "隧道未运行", http.StatusBadRequest)
 )
