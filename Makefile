@@ -2,7 +2,7 @@
 VERSION ?= $(shell git describe --tags --always)
 LDFLAGS := -s -w -X 'gost-panel/internal/config.Version=$(VERSION)'
 
-.PHONY: all build build-frontend build-backend clean dev help release
+.PHONY: all build build-web build-server clean dev help release
 
 # 默认目标
 all: build
@@ -10,52 +10,53 @@ all: build
 # 帮助信息
 help:
 	@echo "Available commands:"
-	@echo "  make build          - Build both frontend and backend"
-	@echo "  make build-frontend - Build frontend only"
-	@echo "  make build-backend  - Build backend only"
-	@echo "  make dev            - Run in development mode (hot reload)"
-	@echo "  make run            - Build frontend and run backend"
+	@echo "  make build          - Build both web and server"
+	@echo "  make build-web      - Build web frontend only"
+	@echo "  make build-server   - Build server backend only"
+	@echo "  make dev            - Run in development mode"
+	@echo "  make run            - Build web and run server"
 	@echo "  make clean          - Clean build artifacts"
 	@echo "  make release        - Build multi-platform release"
 	@echo ""
 	@echo "💡 Tip for Windows users: Run these commands in Git Bash or WSL for compatibility."
 
 # 完整构建
-build: build-frontend build-backend
-	@echo "Build complete! Binary: backend/gost-panel.exe"
+build: build-web build-server
+	@echo "Build complete! Binary: gost-panel"
 
 # 构建前端
-build-frontend:
-	@echo "Building frontend..."
-	cd frontend && npm install && npm run build
-	@echo "Frontend build complete"
+build-web:
+	@echo "Building web..."
+	cd web && npm install && npm run build
+	@echo "Web build complete"
 	
 # 构建后端（包含嵌入的前端）
-build-backend:
-	@echo "Building backend..."
-	cd backend && go build -ldflags="$(LDFLAGS)" -o gost-panel.exe cmd/server/main.go
-	@echo "Backend build complete"
+build-server:
+	@echo "Building server..."
+	go build -ldflags="$(LDFLAGS)" -o gost-panel cmd/server/main.go
+	@echo "Server build complete"
 
 # 运行（构建前端并启动后端）
-run: build-frontend
-	@echo "Starting backend..."
-	cd backend && go run cmd/server/main.go
+run: build-web
+	@echo "Starting server..."
+	go run cmd/server/main.go
+
+# 构建多平台发布版本
+release: build-web
+	@echo "Building release binaries..."
+	GOOS=linux GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o gost-panel-linux-amd64 cmd/server/main.go
+	GOOS=linux GOARCH=arm64 go build -ldflags="$(LDFLAGS)" -o gost-panel-linux-arm64 cmd/server/main.go
+	GOOS=darwin GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o gost-panel-darwin-amd64 cmd/server/main.go
+	GOOS=darwin GOARCH=arm64 go build -ldflags="$(LDFLAGS)" -o gost-panel-darwin-arm64 cmd/server/main.go
+	GOOS=windows GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o gost-panel-windows-amd64.exe cmd/server/main.go
+	@echo "Release build complete"
 
 # 清理构建产物
 clean:
 	@echo "Cleaning artifacts..."
-	rm -f backend/gost-panel.exe
-	rm -f backend/main.exe
-	rm -rf backend/internal/router/dist
-	rm -rf frontend/dist
-	@echo "Clean complete"
-
-# 构建多平台发布版本
-release: build-frontend
-	@echo "Building multi-platform release..."
-	cd backend && CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o gost-panel-windows-amd64.exe cmd/server/main.go
-	cd backend && CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o gost-panel-linux-amd64 cmd/server/main.go
-	cd backend && CGO_ENABLED=0 GOOS=linux   GOARCH=arm64 go build -ldflags="$(LDFLAGS)" -o gost-panel-linux-arm64 cmd/server/main.go
-	cd backend && CGO_ENABLED=0 GOOS=darwin  GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o gost-panel-darwin-amd64 cmd/server/main.go
-	cd backend && CGO_ENABLED=0 GOOS=darwin  GOARCH=arm64 go build -ldflags="$(LDFLAGS)" -o gost-panel-darwin-arm64 cmd/server/main.go
-	@echo "Multi-platform build complete"
+	rm -f gost-panel
+	rm -f gost-panel.exe
+	rm -f main
+	rm -f main.exe
+	rm -rf internal/router/dist
+	rm -rf web/dist

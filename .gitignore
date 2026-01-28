@@ -1,4 +1,4 @@
-# 操作系统
+# OS
 .DS_Store
 Thumbs.db
 
@@ -7,31 +7,46 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
-.claude
+*~
 
-# 后端
-backend/*.exe
-backend/*.db
-backend/data/
-backend/logs/
-backend/tmp/
-backend/main
-backend/gost-panel
+# Go
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+go.work
 
-# 前端
-frontend/node_modules/
-frontend/dist/
-frontend/.cache/
-frontend/*.log
+# Database & Data
+*.db
+*.db-shm
+*.db-wal
+data/
 
-# 环境变量
-.env
-.env.local
-
-# 日志
+# Logs
 *.log
 logs/
 
-# 临时文件
-*.tmp
+# Temp
 tmp/
+temp/
+*.tmp
+
+# Build
+dist/
+build/
+internal/router/dist/
+main
+gost-panel
+
+# Frontend (Web)
+web/node_modules/
+web/dist/
+web/.cache/
+web/*.log
+
+# Environment
+.env
+.env.local

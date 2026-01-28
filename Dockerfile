@@ -1,9 +1,9 @@
 # 前端构建阶段
-FROM node:20-alpine AS frontend-builder
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
+FROM node:20-alpine AS web-builder
+WORKDIR /app/web
+COPY web/package*.json ./
 RUN npm ci
-COPY frontend/ .
+COPY web/ .
 RUN npm run build
 
 # 后端构建阶段
@@ -11,14 +11,18 @@ FROM golang:1.23-alpine AS backend-builder
 WORKDIR /app
 
 # 复制依赖文件
-COPY backend/go.mod backend/go.sum ./
+COPY go.mod go.sum ./
 RUN go mod download
 
 # 复制后端源码
-COPY backend/ .
+COPY cmd/ cmd/
+COPY internal/ internal/
+COPY pkg/ pkg/
+COPY config/ config/
 
 # 从前端构建阶段复制 dist 到后端 embedding 路径
-COPY --from=frontend-builder /app/backend/internal/router/dist ./internal/router/dist
+# 注意：前端构建输出到了 ../internal/router/dist，即 /app/internal/router/dist
+COPY --from=web-builder /app/internal/router/dist ./internal/router/dist
 
 # 编译（关闭 CGO，使用纯 Go SQLite 驱动）
 RUN CGO_ENABLED=0 GOOS=linux \

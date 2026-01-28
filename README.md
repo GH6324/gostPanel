@@ -122,10 +122,10 @@ bash <(curl -sSL https://raw.githubusercontent.com/apicoder-peng/gostPanel/maste
 make build
 
 # 只构建前端
-make build-frontend
+make build-web
 
 # 只构建后端
-make build-backend
+make build-server
 
 # 清理构建产物
 make clean

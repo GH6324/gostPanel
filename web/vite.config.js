@@ -20,7 +20,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: '../backend/internal/router/dist',
+    outDir: '../internal/router/dist',
     emptyOutDir: true
   }
 })
