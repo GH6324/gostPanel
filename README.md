@@ -43,7 +43,7 @@ docker-compose up -d
 ```
 
 **方式 B: 二进制脚本 (原生部署)**
-适用于没有 Docker 的 Linux 服务器（要求内存 > 512MB）：
+适用于没有 Docker 的 Linux 服务器（要求内存 > 128MB）：
 
 **默认安装 (端口 39100):**
 ```bash
