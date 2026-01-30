@@ -141,7 +141,7 @@
           <el-table :data="nodeConfig?.services || []" style="width: 100%" border size="small">
              <el-table-column prop="name" label="名称" width="150" />
              <el-table-column prop="addr" label="监听地址" width="180" />
-             <el-table-column prop="handler.type" label="协议" width="100">
+             <el-table-column prop="listener.type" label="协议" width="100">
                <template #default="{ row }">
                  <el-tag size="small">{{ row.handler?.type || '-' }}</el-tag>
                </template>
