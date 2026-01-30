@@ -92,12 +92,21 @@ func (s *NodeHealthService) checkNodes() {
 				}
 			}
 
-			// 调试日志
 			if status == model.NodeStatusOnline {
 				logger.Debugf("节点 %s 在线", n.Name)
 			} else {
 				// 停止其关联的所有规则和隧道
 				_ = s.ruleRepo.StopByNodeID(n.ID)
+
+				// 查找并停止受影响的隧道关联的规则
+				if tunnels, err := s.tunnelRepo.FindByNodeID(n.ID); err == nil && len(tunnels) > 0 {
+					var tunnelIDs []uint
+					for _, t := range tunnels {
+						tunnelIDs = append(tunnelIDs, t.ID)
+					}
+					_ = s.ruleRepo.StopByTunnelIDs(tunnelIDs)
+				}
+
 				_ = s.tunnelRepo.StopByNodeID(n.ID)
 				logger.Debugf("节点 %s 离线, status=%s, old=%s", n.Name, status, n.Status)
 			}
