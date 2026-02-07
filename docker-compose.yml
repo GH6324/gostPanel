@@ -1,6 +1,6 @@
 services:
   gostpanel:
-    image: ghcr.io/apicoder-peng/gostpanel:latest
+    image: ghcr.io/code-gopher/gostpanel:latest
     container_name: gostpanel
     ports:
       - "39100:39100"
