@@ -99,12 +99,12 @@
           <el-input v-model="form.name" placeholder="请输入节点名称" :prefix-icon="Management" />
         </el-form-item>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="24" :sm="12">
             <el-form-item label="IP/域名" prop="address">
               <el-input v-model="form.address" placeholder="例如: 1.2.3.4" :prefix-icon="Link" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="24" :sm="12">
             <el-form-item label="API 端口" prop="port">
               <el-input-number v-model="form.port" :min="1" :max="65535" controls-position="right" style="width: 100%" />
             </el-form-item>
@@ -112,12 +112,12 @@
         </el-row>
         
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="24" :sm="12">
             <el-form-item label="认证用户" prop="username">
               <el-input v-model="form.username" placeholder="用户名" :prefix-icon="User" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="24" :sm="12">
             <el-form-item label="认证密码" prop="password">
               <el-input v-model="form.password" placeholder="密码" :prefix-icon="Lock" />
             </el-form-item>
@@ -595,5 +595,84 @@ onBeforeUnmount(() => {
 
 .install-tips li {
   margin-bottom: 4px;
+}
+
+/* ========== 移动端适配 ========== */
+@media screen and (max-width: 768px) {
+  .page-header h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .filters {
+    flex-wrap: wrap;
+  }
+  
+  .filters .el-input,
+  .filters .el-select {
+    width: 100% !important;
+  }
+  
+  :deep(.el-dialog) {
+    width: 95% !important;
+    margin: 10px auto !important;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+  
+  :deep(.el-form-item) {
+    margin-bottom: 12px;
+    display: block !important;
+  }
+  
+  :deep(.el-form-item__label) {
+    float: none;
+    display: block;
+    text-align: left;
+    padding-bottom: 4px;
+    width: auto !important;
+    margin-bottom: 4px;
+  }
+  
+  :deep(.el-form-item__content) {
+    margin-left: 0 !important;
+    display: block !important;
+    width: 100% !important;
+  }
+  
+  :deep(.el-card__body) {
+    padding: 12px;
+    overflow-x: auto;
+  }
+  
+  :deep(.el-table) {
+    font-size: 12px;
+    min-width: 500px;
+  }
+  
+  .command-box code {
+    font-size: 11px;
+  }
+  
+  /* 操作列按钮调整 */
+  :deep(.el-table .cell) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 4px;
+  }
+  :deep(.el-button--small) {
+    margin-left: 0 !important;
+    padding: 2px 4px;
+  }
 }
 </style>

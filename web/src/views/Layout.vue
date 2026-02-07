@@ -3,6 +3,7 @@
     <!-- 头部 (Top Header) -->
     <el-header class="header">
       <div class="header-left">
+        <el-icon class="menu-toggle" @click="toggleMobileMenu"><Expand /></el-icon>
         <div class="logo">
           <img v-if="logoUrl" :src="logoUrl" alt="logo" class="logo-img" />
           <span>{{ siteTitle }}</span>
@@ -35,7 +36,8 @@
     <!-- 下方主体 (Body: Sidebar + Content) -->
     <el-container class="body-container">
       <!-- 侧边栏 (Floating Sidebar) -->
-      <el-aside :width="isCollapse ? '64px' : '220px'" class="aside">
+      <div v-if="mobileMenuVisible" class="mobile-overlay" @click="mobileMenuVisible = false"></div>
+      <el-aside :width="isCollapse ? '64px' : '220px'" class="aside" :class="{ 'mobile-show': mobileMenuVisible }">
         <el-menu
           :default-active="currentRoute"
           :collapse="isCollapse"
@@ -144,7 +146,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { 
-  Key, SwitchButton,
+  Key, SwitchButton, Menu as IconMenu, Expand,
   Odometer, Monitor, Switch, Connection, Document, User, Setting, InfoFilled
 } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/store/auth'
@@ -177,6 +179,12 @@ const menuItems = [
 const isCollapse = ref(false)
 const toggleCollapse = () => {
   isCollapse.value = !isCollapse.value
+}
+
+// 移动端菜单
+const mobileMenuVisible = ref(false)
+const toggleMobileMenu = () => {
+  mobileMenuVisible.value = !mobileMenuVisible.value
 }
 
 // 当前路由
@@ -418,5 +426,93 @@ const handleLogout = async () => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* ========== 移动端适配 ========== */
+@media screen and (max-width: 768px) {
+  .header {
+    padding: 0 12px;
+    height: 56px;
+  }
+  
+  .logo span {
+    display: none;
+  }
+  
+  .logo-img {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .username-box {
+    display: none;
+  }
+  
+  .user-icon-box {
+    border-radius: 4px;
+    margin-left: 0;
+  }
+  
+  .aside {
+    position: fixed;
+    left: 0;
+    top: 56px;
+    bottom: 0;
+    z-index: 1000;
+    margin: 0;
+    border-radius: 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .aside.mobile-show {
+    transform: translateX(0);
+  }
+  
+  .main {
+    margin: 8px;
+  }
+  
+  .footer {
+    padding: 12px;
+    font-size: 12px;
+  }
+  
+  .footer span {
+    display: block;
+  }
+}
+
+/* 汉堡菜单默认隐藏 */
+.menu-toggle {
+  display: none;
+}
+
+/* 遮罩层默认隐藏 */
+.mobile-overlay {
+  display: none;
+}
+
+/* 移动端显示汉堡菜单和遮罩层 */
+@media screen and (max-width: 768px) {
+  .menu-toggle {
+    display: flex !important;
+    font-size: 28px;
+    color: #303133;
+    cursor: pointer;
+    padding: 8px;
+    margin-right: 4px;
+  }
+  
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
 }
 </style>

@@ -247,4 +247,24 @@ onMounted(() => {
 .ml-2 {
   margin-left: 8px;
 }
+
+/* ========== 移动端适配 ========== */
+@media screen and (max-width: 768px) {
+  .system-container {
+    padding: 8px;
+  }
+  
+  .setting-form {
+    max-width: 100%;
+  }
+  
+  .setting-form :deep(.el-form-item__label) {
+    width: 100px !important;
+  }
+  
+  :deep(.el-dialog) {
+    width: 95% !important;
+    margin: 10px auto !important;
+  }
+}
 </style>

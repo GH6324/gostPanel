@@ -181,4 +181,26 @@ onMounted(() => {
   justify-content: flex-end;
   margin-top: 16px;
 }
+
+/* ========== 移动端适配 ========== */
+@media screen and (max-width: 768px) {
+  .search-bar {
+    flex-wrap: wrap;
+  }
+  
+  .search-bar .el-input,
+  .search-bar .el-select {
+    width: 100% !important;
+  }
+  
+  :deep(.el-table) {
+    font-size: 12px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
 </style>

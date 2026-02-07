@@ -156,5 +156,20 @@ onMounted(() => {
   padding: 0 15px;
 }
 
-
+/* ========== 移动端适配 ========== */
+@media screen and (max-width: 768px) {
+  .login-box {
+    width: 90%;
+    max-width: 360px;
+    padding: 24px;
+  }
+  
+  .login-header h1 {
+    font-size: 22px;
+  }
+  
+  .login-header p {
+    font-size: 12px;
+  }
+}
 </style>

@@ -169,7 +169,7 @@
           <div class="form-hint">在隧道的入口节点上创建转发服务，流量通过隧道链路转发</div>
         </el-form-item>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="24" :sm="12">
             <el-form-item label="协议" prop="protocol">
               <el-select v-model="form.protocol" placeholder="选择协议" style="width: 100%">
                 <el-option label="TCP" value="tcp" />
@@ -177,14 +177,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="24" :sm="12">
             <el-form-item label="监听端口" prop="listen_port">
               <el-input-number v-model="form.listen_port" :min="1" :max="65535" controls-position="right" style="width: 100%" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="24" :sm="12">
             <el-form-item label="负载均衡" prop="strategy">
                <el-select v-model="form.strategy" placeholder="默认为轮询">
                   <el-option label="轮询" value="round"/>
@@ -197,20 +197,16 @@
         </el-row>
 
         <el-form-item label="目标列表" style="margin-bottom: 0;">
-           <el-table :data="form.targetList" border style="width: 100%" size="small" :show-header="true">
-              <el-table-column label="目标地址 (IP:Port)" min-width="250">
-                  <template #default="{ row }">
-                      <el-input v-model="row.address" placeholder="例如: 192.168.1.100:8080" />
-                  </template>
-              </el-table-column>
-              <el-table-column label="操作" width="60" align="center">
-                  <template #default="{ $index }">
-                      <el-button type="danger" link :icon="UseRemove" @click="removeTarget($index)" />
-                  </template>
-              </el-table-column>
-           </el-table>
-           <div style="margin-top: 10px; text-align: center; width: 100%;">
-               <el-button type="primary" link :icon="Plus" @click="addTarget" style="width: 100%; border: 1px dashed #dcdfe6;">添加目标地址</el-button>
+           <div class="target-list-container">
+               <div class="target-list">
+                   <div v-for="(item, index) in form.targetList" :key="index" class="target-item">
+                       <el-input v-model="item.address" placeholder="例如: 192.168.1.100:8080" />
+                       <el-button type="danger" :icon="UseRemove" circle plain @click="removeTarget(index)" class="remove-btn" />
+                   </div>
+               </div>
+               <div style="margin-top: 10px;">
+                   <el-button type="primary" plain :icon="Plus" @click="addTarget" style="width: 100%;">添加目标地址</el-button>
+               </div>
            </div>
         </el-form-item>
         
@@ -743,5 +739,102 @@ const handleTypeChange = (val) => {
 
 :deep(.el-table .el-table__cell) {
   padding: 12px 0;
+}
+
+/* ========== 移动端适配 ========== */
+@media screen and (max-width: 768px) {
+  .page-header h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .filters {
+    flex-wrap: wrap;
+  }
+  
+  .filters .el-input,
+  .filters .el-select {
+    width: 100% !important;
+  }
+  
+  .action-buttons {
+    justify-content: flex-end;
+  }
+  
+  :deep(.el-dialog) {
+    width: 95% !important;
+    margin: 10px auto !important;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+  
+  :deep(.el-form-item) {
+    margin-bottom: 12px;
+    display: block !important; /* 强制 block 布局，取代 flex */
+  }
+  
+  :deep(.el-form-item__label) {
+    float: none;
+    display: block;
+    text-align: left;
+    padding-bottom: 4px;
+    width: auto !important; /* 解除 label-width 限制 */
+    margin-bottom: 4px;
+  }
+  
+  :deep(.el-form-item__content) {
+    margin-left: 0 !important;
+    display: block !important; /* 确保内容块级显示 */
+    width: 100% !important;
+  }
+
+  :deep(.el-card__body) {
+    padding: 12px;
+    overflow-x: auto;
+  }
+  
+  :deep(.el-table) {
+    font-size: 12px;
+    min-width: 500px;
+  }
+
+  
+  /* 操作列按钮调整 */
+  :deep(.el-table .cell) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 4px;
+  }
+  :deep(.el-button--small) {
+    margin-left: 0 !important;
+    padding: 2px 4px;
+  }
+}
+
+.target-list-container {
+  width: 100%;
+}
+.target-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.target-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.remove-btn {
+  flex-shrink: 0;
 }
 </style>

@@ -127,7 +127,7 @@
         </el-form-item>
         <el-divider content-position="left">协议配置</el-divider>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="24" :sm="12">
             <el-form-item label="协议" prop="protocol">
               <el-select v-model="form.protocol" style="width: 100%">
                 <el-option label="TCP" value="tcp" />
@@ -140,7 +140,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="24" :sm="12">
             <el-form-item label="Relay端口" prop="relay_port">
               <el-input-number v-model="form.relay_port" :min="1" :max="65535" controls-position="right" style="width: 100%" />
               <div class="form-hint">出口节点 Relay 服务端口</div>
@@ -436,5 +436,80 @@ onBeforeUnmount(() => {
 
 :deep(.el-table .el-table__cell) {
   padding: 12px 0;
+}
+
+/* ========== 移动端适配 ========== */
+@media screen and (max-width: 768px) {
+  .page-header h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .filters {
+    flex-wrap: wrap;
+  }
+  
+  .filters .el-input,
+  .filters .el-select {
+    width: 100% !important;
+  }
+  
+  :deep(.el-dialog) {
+    width: 95% !important;
+    margin: 10px auto !important;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+  
+  :deep(.el-form-item) {
+    margin-bottom: 12px;
+    display: block !important;
+  }
+  
+  :deep(.el-form-item__label) {
+    float: none;
+    display: block;
+    text-align: left;
+    padding-bottom: 4px;
+    width: auto !important;
+    margin-bottom: 4px;
+  }
+  
+  :deep(.el-form-item__content) {
+    margin-left: 0 !important;
+    display: block !important;
+    width: 100% !important;
+  }
+  
+  :deep(.el-card__body) {
+    padding: 12px;
+    overflow-x: auto;
+  }
+  
+  :deep(.el-table) {
+    font-size: 12px;
+    min-width: 500px;
+  }
+  
+  /* 操作列按钮调整 */
+  :deep(.el-table .cell) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 4px;
+  }
+  :deep(.el-button--small) {
+    margin-left: 0 !important;
+    padding: 2px 4px;
+  }
 }
 </style>

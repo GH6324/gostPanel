@@ -300,4 +300,61 @@ onUnmounted(() => {
 .recent-logs {
   border-radius: 12px;
 }
+
+/* ========== 移动端适配 ========== */
+@media screen and (max-width: 768px) {
+  .stat-cards .el-col {
+    max-width: 50%;
+    flex: 0 0 50%;
+    margin-bottom: 12px;
+  }
+  
+  .stat-card :deep(.el-card__body) {
+    padding: 12px;
+  }
+  
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 8px;
+  }
+  
+  .stat-value {
+    font-size: 20px;
+  }
+  
+  .stat-label {
+    font-size: 12px;
+  }
+  
+  .stat-sub {
+    font-size: 10px;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .quick-actions .el-col {
+    max-width: 100%;
+    flex: 0 0 100%;
+    margin-bottom: 12px;
+  }
+  
+  .action-buttons {
+    gap: 8px;
+  }
+  
+  .action-buttons .el-button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  :deep(.el-descriptions) {
+    font-size: 12px;
+  }
+  
+  :deep(.el-table) {
+    font-size: 12px;
+  }
+}
 </style>
