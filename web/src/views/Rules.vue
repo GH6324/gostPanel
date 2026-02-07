@@ -30,7 +30,11 @@
           <el-button :icon="Search" @click="handleSearch">搜索</el-button>
           <el-button :icon="Refresh" @click="fetchData">刷新</el-button>
         </div>
-        <el-button type="primary" :icon="Plus" @click="openDialog()">添加规则</el-button>
+        <div class="action-buttons">
+          <el-button type="success" :icon="Download" @click="handleExport">导出</el-button>
+          <el-button type="warning" :icon="Upload" @click="showImportDialog">导入</el-button>
+          <el-button type="primary" :icon="Plus" @click="openDialog()">添加规则</el-button>
+        </div>
       </div>
 
       <!-- 表格 -->
@@ -219,13 +223,47 @@
         <el-button type="primary" :loading="submitLoading" @click="handleSubmit">确定</el-button>
       </template>
     </el-dialog>
+
+    <!-- 导出弹框 -->
+    <el-dialog v-model="exportDialogVisible" title="导出规则" width="600px">
+      <el-alert type="info" :closable="false" style="margin-bottom: 16px;">
+        复制以下 JSON 数据，可用于导入到其他面板
+      </el-alert>
+      <el-input
+        v-model="exportJsonData"
+        type="textarea"
+        :rows="15"
+        readonly
+      />
+      <template #footer>
+        <el-button @click="exportDialogVisible = false">关闭</el-button>
+        <el-button type="primary" @click="copyExportData">复制数据</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 导入弹框 -->
+    <el-dialog v-model="importDialogVisible" title="导入规则" width="600px">
+      <el-alert type="warning" :closable="false" style="margin-bottom: 16px;">
+        粘贴 JSON 数据，将批量创建规则（需要手动修改端口避免冲突）
+      </el-alert>
+      <el-input
+        v-model="importJsonData"
+        type="textarea"
+        :rows="15"
+        placeholder="请粘贴 JSON 数据..."
+      />
+      <template #footer>
+        <el-button @click="importDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="importLoading" @click="handleImport">导入</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Plus, Refresh, Search, EditPen, Remove as UseRemove } from '@element-plus/icons-vue'
+import { Plus, Refresh, Search, EditPen, Remove as UseRemove, Download, Upload } from '@element-plus/icons-vue'
 import { getRuleList, createRule, updateRule, deleteRule, startRule, stopRule } from '@/api/rule'
 import { getNodeList } from '@/api/node'
 import { getTunnelList } from '@/api/tunnel'
@@ -254,6 +292,13 @@ const isEdit = ref(false)
 const editId = ref(null)
 const submitLoading = ref(false)
 const formRef = ref(null)
+
+// 导入导出弹框
+const exportDialogVisible = ref(false)
+const exportJsonData = ref('')
+const importDialogVisible = ref(false)
+const importJsonData = ref('')
+const importLoading = ref(false)
 
 const form = reactive({
   type: 'forward',
@@ -501,6 +546,113 @@ const handleCopy = (row) => {
   dialogVisible.value = true
 }
 
+// 导出规则
+const handleExport = async () => {
+  try {
+    // 获取全部规则
+    const res = await getRuleList({ pageSize: 1000 })
+    const allRules = res.data.list || []
+    
+    if (allRules.length === 0) {
+      ElMessage.warning('没有可导出的规则')
+      return
+    }
+    
+    // 整理导出数据，只保留核心字段
+    const exportData = allRules.map(rule => ({
+      name: rule.name,
+      type: rule.type,
+      node_id: rule.node_id,
+      tunnel_id: rule.tunnel_id,
+      protocol: rule.protocol,
+      listen_port: rule.listen_port,
+      targets: rule.targets,
+      strategy: rule.strategy,
+      remark: rule.remark || ''
+    }))
+    
+    exportJsonData.value = JSON.stringify(exportData, null, 2)
+    exportDialogVisible.value = true
+  } catch (error) {
+    console.error('获取规则失败:', error)
+    ElMessage.error('获取规则失败')
+  }
+}
+
+// 复制导出数据
+const copyExportData = async () => {
+  try {
+    await navigator.clipboard.writeText(exportJsonData.value)
+    ElMessage.success('已复制到剪贴板')
+  } catch (error) {
+    ElMessage.error('复制失败')
+  }
+}
+
+// 显示导入弹框
+const showImportDialog = () => {
+  importJsonData.value = ''
+  importDialogVisible.value = true
+}
+
+// 导入规则
+const handleImport = async () => {
+  if (!importJsonData.value.trim()) {
+    ElMessage.warning('请粘贴 JSON 数据')
+    return
+  }
+  
+  let rules = []
+  try {
+    rules = JSON.parse(importJsonData.value)
+    if (!Array.isArray(rules)) {
+      rules = [rules]
+    }
+  } catch (error) {
+    ElMessage.error('JSON 格式错误')
+    return
+  }
+  
+  if (rules.length === 0) {
+    ElMessage.warning('没有可导入的规则')
+    return
+  }
+  
+  importLoading.value = true
+  let successCount = 0
+  let failCount = 0
+  
+  for (const rule of rules) {
+    try {
+      await createRule({
+        name: rule.name || '导入规则',
+        type: rule.type || 'forward',
+        node_id: rule.node_id,
+        tunnel_id: rule.tunnel_id,
+        protocol: rule.protocol || 'tcp',
+        listen_port: rule.listen_port || 0,
+        targets: rule.targets || [],
+        strategy: rule.strategy || 'round',
+        remark: rule.remark || ''
+      })
+      successCount++
+    } catch (error) {
+      failCount++
+      console.error('导入规则失败:', error)
+    }
+  }
+  
+  importLoading.value = false
+  importDialogVisible.value = false
+  
+  if (successCount > 0) {
+    ElMessage.success(`成功导入 ${successCount} 条规则` + (failCount > 0 ? `，失败 ${failCount} 条` : ''))
+    fetchData()
+  } else {
+    ElMessage.error('导入失败')
+  }
+}
+
 // 定时刷新
 let refreshTimer = null
 
@@ -565,6 +717,11 @@ const handleTypeChange = (val) => {
 .filters {
   display: flex;
   gap: 12px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
 }
 
 .pagination {
