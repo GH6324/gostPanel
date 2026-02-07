@@ -4,7 +4,7 @@ server:
 
 database:
   type: "sqlite"
-  path: "./gost-panel.db"
+  path: "./data/gost-panel.db"
 
 jwt:
   secret: "zxcvbnm123456"

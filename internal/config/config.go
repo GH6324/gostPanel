@@ -107,7 +107,7 @@ func setDefaults(cfg *Config) {
 		cfg.Database.Type = "sqlite"
 	}
 	if cfg.Database.Path == "" {
-		cfg.Database.Path = "./gost-panel.db"
+		cfg.Database.Path = "./data/gost-panel.db"
 	}
 
 	// JWT 默认配置
