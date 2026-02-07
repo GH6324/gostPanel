@@ -65,7 +65,7 @@
         <el-table-column label="操作" width="300" align="center" fixed="right">
           <template #default="{ row }">
             <el-button v-if="row.status !== 'online'" type="warning" link size="small" @click="showInstallCommand(row)">安装</el-button>
-            <el-button type="success" link size="small" @click="handleViewConfig(row)">配置</el-button>
+            <el-button v-if="row.status === 'online'" type="success" link size="small" @click="handleViewConfig(row)">配置</el-button>
             <el-button type="primary" link size="small" @click="openDialog(row)">编辑</el-button>
             <el-button type="info" link size="small" @click="handleCopy(row)">复制</el-button>
             <el-button type="danger" link size="small" @click="handleDelete(row)">删除</el-button>

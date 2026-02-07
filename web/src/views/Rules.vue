@@ -94,7 +94,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center" fixed="right">
+        <el-table-column label="操作" width="240" align="center" fixed="right">
           <template #default="{ row }">
             <el-button 
               v-if="row.status !== 'running'" 
@@ -107,6 +107,7 @@
               @click="handleStop(row)"
             >停止</el-button>
             <el-button type="primary" link size="small" @click="openDialog(row)">编辑</el-button>
+            <el-button type="info" link size="small" @click="handleCopy(row)">复制</el-button>
             <el-button type="danger" link size="small" @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -472,6 +473,32 @@ const handleStop = async (row) => {
   } catch (error) {
     console.error('停止失败:', error)
   }
+}
+
+// 复制规则
+const handleCopy = (row) => {
+  isEdit.value = false
+  editId.value = null
+  
+  // 解析 targets
+  let tList = []
+  if (row.targets && row.targets.length > 0) {
+    tList = row.targets.map(t => ({ address: t }))
+  }
+
+  Object.assign(form, {
+    type: row.type || 'forward',
+    node_id: row.node_id,
+    tunnel_id: row.tunnel_id || null,
+    name: row.name + '-copy',
+    protocol: row.protocol,
+    listen_port: row.listen_port + 1, // 端口自动+1
+    targetList: tList.length > 0 ? tList : [{ address: '' }],
+    strategy: row.strategy || 'round',
+    remark: row.remark || ''
+  })
+  
+  dialogVisible.value = true
 }
 
 // 定时刷新

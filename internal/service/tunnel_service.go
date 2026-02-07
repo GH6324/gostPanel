@@ -254,7 +254,7 @@ func (s *TunnelService) Start(id uint, userID uint, username string, ip, userAge
 			Type: "relay", // relay 协议支持接收客户端传来的目标地址
 		},
 		Listener: &gost.ListenerConfig{
-			Type: "mtls",
+			Type: tunnel.Protocol, // 使用隧道配置的协议
 		},
 	}
 
@@ -295,7 +295,7 @@ func (s *TunnelService) Start(id uint, userID uint, username string, ip, userAge
 							Type: "relay", // 与出口节点的 relay handler 匹配
 						},
 						Dialer: &gost.DialerConfig{
-							Type: "mtls",
+							Type: tunnel.Protocol, // 使用隧道配置的协议
 						},
 					},
 				},

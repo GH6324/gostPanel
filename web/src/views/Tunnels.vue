@@ -56,7 +56,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="备注" min-width="150" show-overflow-tooltip />
-        <el-table-column label="操作" width="180" align="center" fixed="right">
+        <el-table-column label="操作" width="240" align="center" fixed="right">
           <template #default="{ row }">
             <el-button 
               v-if="row.status !== 'running'" 
@@ -69,6 +69,7 @@
               @click="handleStop(row)"
             >停止</el-button>
             <el-button type="primary" link size="small" @click="openDialog(row)">编辑</el-button>
+            <el-button type="info" link size="small" @click="handleCopy(row)">复制</el-button>
             <el-button type="danger" link size="small" @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -131,6 +132,11 @@
               <el-select v-model="form.protocol" style="width: 100%">
                 <el-option label="TCP" value="tcp" />
                 <el-option label="UDP" value="udp" />
+                <el-option label="TLS" value="tls" />
+                <el-option label="MTLS" value="mtls" />
+                <el-option label="WS" value="ws" />
+                <el-option label="MWS" value="mws" />
+                <el-option label="QUIC" value="quic" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -351,6 +357,23 @@ const handleStop = async (row) => {
   } catch (error) {
     console.error('停止失败:', error)
   }
+}
+
+// 复制隧道
+const handleCopy = (row) => {
+  isEdit.value = false
+  editId.value = null
+  
+  Object.assign(form, {
+    name: row.name + '-copy',
+    entry_node_id: row.entry_node_id,
+    exit_node_id: row.exit_node_id,
+    protocol: row.protocol || 'tcp',
+    relay_port: row.relay_port + 1, // 端口自动+1
+    remark: row.remark || ''
+  })
+  
+  dialogVisible.value = true
 }
 
 // 定时刷新
