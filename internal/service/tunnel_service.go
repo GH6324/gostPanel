@@ -251,10 +251,10 @@ func (s *TunnelService) Start(id uint, userID uint, username string, ip, userAge
 		Name: relayServiceName,
 		Addr: fmt.Sprintf(":%d", tunnel.RelayPort),
 		Handler: &gost.HandlerConfig{
-			Type: "relay",
+			Type: "relay", // relay 协议支持接收客户端传来的目标地址
 		},
 		Listener: &gost.ListenerConfig{
-			Type: tunnel.Protocol,
+			Type: "mtls",
 		},
 	}
 
@@ -292,10 +292,10 @@ func (s *TunnelService) Start(id uint, userID uint, username string, ip, userAge
 						Name: "exit-relay",
 						Addr: relayAddr,
 						Connector: &gost.ConnectorConfig{
-							Type: "forward",
+							Type: "relay", // 与出口节点的 relay handler 匹配
 						},
 						Dialer: &gost.DialerConfig{
-							Type: tunnel.Protocol,
+							Type: "mtls",
 						},
 					},
 				},
