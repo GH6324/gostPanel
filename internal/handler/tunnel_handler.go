@@ -25,7 +25,7 @@ func NewTunnelHandler(tunnelService *service.TunnelService) *TunnelHandler {
 func (h *TunnelHandler) Create(c *gin.Context) {
 	var req dto.CreateTunnelReq
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.BadRequest(c, "请求参数错误: "+err.Error())
+		response.BadRequest(c, err.Error())
 		return
 	}
 
@@ -54,7 +54,7 @@ func (h *TunnelHandler) Update(c *gin.Context) {
 
 	var req dto.UpdateTunnelReq
 	if err = c.ShouldBindJSON(&req); err != nil {
-		response.BadRequest(c, "请求参数错误: "+err.Error())
+		response.BadRequest(c, err.Error())
 		return
 	}
 
@@ -116,7 +116,7 @@ func (h *TunnelHandler) GetByID(c *gin.Context) {
 func (h *TunnelHandler) List(c *gin.Context) {
 	var req dto.TunnelListReq
 	if err := c.ShouldBindQuery(&req); err != nil {
-		response.BadRequest(c, "请求参数错误: "+err.Error())
+		response.BadRequest(c, err.Error())
 		return
 	}
 

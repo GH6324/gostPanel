@@ -22,7 +22,7 @@ type GostTunnel struct {
 	Name        string       `gorm:"size:100;not null" json:"name"`       // 隧道名称
 	EntryNodeID uint         `gorm:"not null;index" json:"entry_node_id"` // 入口节点 ID
 	ExitNodeID  uint         `gorm:"not null;index" json:"exit_node_id"`  // 出口节点 ID
-	Protocol    string       `gorm:"size:10;default:tcp" json:"protocol"` // 协议 (tcp/udp)
+	Protocol    string       `gorm:"size:10;default:tcp" json:"protocol"` // 协议 (tcp/udp/tls/mtls/ws/mws/quic)
 	RelayPort   int          `gorm:"default:8443" json:"relay_port"`      // 出口节点 Relay 服务端口
 	Status      TunnelStatus `gorm:"size:20;default:stopped" json:"status"`
 

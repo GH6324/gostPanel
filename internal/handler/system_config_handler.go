@@ -48,7 +48,7 @@ func (h *SystemConfigHandler) GetPublicConfig(c *gin.Context) {
 func (h *SystemConfigHandler) UpdateConfig(c *gin.Context) {
 	var req dto.UpdateSystemConfigReq
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.BadRequest(c, "请求参数错误: "+err.Error())
+		response.BadRequest(c, err.Error())
 		return
 	}
 
@@ -64,7 +64,7 @@ func (h *SystemConfigHandler) UpdateConfig(c *gin.Context) {
 func (h *SystemConfigHandler) TestEmail(c *gin.Context) {
 	var req dto.EmailConfigReq
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.BadRequest(c, "请求参数错误: "+err.Error())
+		response.BadRequest(c, err.Error())
 		return
 	}
 

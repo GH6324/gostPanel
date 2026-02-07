@@ -25,7 +25,7 @@ func NewNodeHandler(nodeService *service.NodeService) *NodeHandler {
 func (h *NodeHandler) Create(c *gin.Context) {
 	var req dto.CreateNodeReq
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.BadRequest(c, "请求参数错误: "+err.Error())
+		response.BadRequest(c, err.Error())
 		return
 	}
 
@@ -54,7 +54,7 @@ func (h *NodeHandler) Update(c *gin.Context) {
 
 	var req dto.UpdateNodeReq
 	if err = c.ShouldBindJSON(&req); err != nil {
-		response.BadRequest(c, "请求参数错误: "+err.Error())
+		response.BadRequest(c, err.Error())
 		return
 	}
 
@@ -116,7 +116,7 @@ func (h *NodeHandler) GetByID(c *gin.Context) {
 func (h *NodeHandler) List(c *gin.Context) {
 	var req dto.NodeListReq
 	if err := c.ShouldBindQuery(&req); err != nil {
-		response.BadRequest(c, "请求参数错误: "+err.Error())
+		response.BadRequest(c, err.Error())
 		return
 	}
 
