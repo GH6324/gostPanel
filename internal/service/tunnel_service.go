@@ -292,7 +292,7 @@ func (s *TunnelService) Start(id uint, userID uint, username string, ip, userAge
 						Name: "exit-relay",
 						Addr: relayAddr,
 						Connector: &gost.ConnectorConfig{
-							Type: "relay",
+							Type: "forward",
 						},
 						Dialer: &gost.DialerConfig{
 							Type: tunnel.Protocol,

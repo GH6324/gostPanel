@@ -50,5 +50,4 @@ web/*.log
 # Environment
 .env
 .env.local
-third_party
 .claude

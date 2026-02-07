@@ -436,12 +436,9 @@ func BuildUDPForwardService(name string, listenPort int, targets []string, strat
 		Listener: &ListenerConfig{
 			Type: "udp",
 			Metadata: map[string]any{
-				"backlog":        256,       // UDP连接队列大小 默认 128
-				"keepAlive":      true,      // 是否保持连接，默认当返回响应数据给客户端后立即断开连接 默认 false
-				"ttl":            "180s",    // UDP连接超时时长，当keepAlive为true时有效 默认 5s
-				"relay":          "tcp",     // UDP转发方式：tcp-采用UDP-over-TCP方式，udp-采用原生SOCKS5标准UDP转发协议 默认tcp
-				"readBufferSize": 1024 * 16, // UDP读数据缓冲区字节大小 默认 1500
-				"readQueueSize":  256,       // UDP连接读数据队列大小 默认 128
+				"keepAlive":      true,     // 否保持连接
+				"ttl":            "60s",    // UDP 连接超时
+				"readBufferSize": 1024 * 4, // UDP读数据缓冲区字节大小
 			},
 		},
 		Forwarder: &ForwarderConfig{
