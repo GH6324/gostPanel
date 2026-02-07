@@ -3,6 +3,7 @@ package service
 import (
 	"gost-panel/internal/dto"
 	"gost-panel/internal/repository"
+	"strings"
 )
 
 // SystemConfigService 系统配置服务
@@ -70,8 +71,8 @@ func (s *SystemConfigService) UpdateConfig(req *dto.UpdateSystemConfigReq) error
 		return err
 	}
 
-	// 映射 Panel
-	config.PanelURL = req.Panel.PanelURL
+	// 映射 Panel (去除末尾斜杠，避免拼接路径时出现双斜杠)
+	config.PanelURL = strings.TrimSuffix(req.Panel.PanelURL, "/")
 
 	// 映射 Email
 	config.SMTPHost = req.Email.Host
