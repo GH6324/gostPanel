@@ -163,14 +163,16 @@ func (r *RuleRepository) StopByNodeID(nodeID uint) error {
 		Update("status", model.RuleStatusStopped).Error
 }
 
-// UpdateStats 更新流量统计
+// UpdateStats 累加流量统计
+// 使用 gorm.Expr 进行累加操作，确保服务重启后流量统计不会归零
 func (r *RuleRepository) UpdateStats(id uint, inputBytes, outputBytes, totalRequests int64) error {
-	return r.UpdateFields(&model.GostRule{}, id, map[string]interface{}{
-		"input_bytes":    inputBytes,
-		"output_bytes":   outputBytes,
-		"total_bytes":    inputBytes + outputBytes,
-		"total_requests": totalRequests,
-	})
+	return r.DB.Model(&model.GostRule{}).Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"input_bytes":    gorm.Expr("input_bytes + ?", inputBytes),
+			"output_bytes":   gorm.Expr("output_bytes + ?", outputBytes),
+			"total_bytes":    gorm.Expr("total_bytes + ?", inputBytes+outputBytes),
+			"total_requests": gorm.Expr("total_requests + ?", totalRequests),
+		}).Error
 }
 
 // StopByTunnelIDs 停止指定隧道列表关联的所有规则
