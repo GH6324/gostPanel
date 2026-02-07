@@ -10,6 +10,9 @@ RUN npm run build
 FROM golang:1.23-alpine AS backend-builder
 WORKDIR /app
 
+# 版本号参数（通过 --build-arg VERSION=xxx 传入）
+ARG VERSION=dev
+
 # 复制依赖文件
 COPY go.mod go.sum ./
 RUN go mod download
@@ -24,9 +27,9 @@ COPY config/ config/
 # 注意：前端构建输出到了 ../internal/router/dist，即 /app/internal/router/dist
 COPY --from=web-builder /app/internal/router/dist ./internal/router/dist
 
-# 编译（关闭 CGO，使用纯 Go SQLite 驱动）
+# 编译（关闭 CGO，使用纯 Go SQLite 驱动，注入版本号）
 RUN CGO_ENABLED=0 GOOS=linux \
-    go build -ldflags="-s -w" -o gost-panel cmd/server/main.go
+    go build -ldflags="-s -w -X 'gost-panel/internal/config.Version=${VERSION}'" -o gost-panel cmd/server/main.go
 
 # 运行阶段
 FROM alpine:latest
