@@ -29,13 +29,9 @@ func (h *NodeHandler) Create(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	node, err := h.nodeService.Create(&req, userID.(uint), username.(string), ip, ua)
+	node, err := h.nodeService.Create(&req, ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -58,13 +54,9 @@ func (h *NodeHandler) Update(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	node, err := h.nodeService.Update(uint(id), &req, userID.(uint), username.(string), ip, ua)
+	node, err := h.nodeService.Update(uint(id), &req, ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -81,13 +73,9 @@ func (h *NodeHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	if err = h.nodeService.Delete(uint(id), userID.(uint), username.(string), ip, ua); err != nil {
+	if err = h.nodeService.Delete(uint(id), ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent); err != nil {
 		response.HandleError(c, err)
 		return
 	}

@@ -29,13 +29,9 @@ func (h *RuleHandler) Create(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	rule, err := h.ruleService.Create(&req, userID.(uint), username.(string), ip, ua)
+	rule, err := h.ruleService.Create(&req, ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -58,13 +54,9 @@ func (h *RuleHandler) Update(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	rule, err := h.ruleService.Update(uint(id), &req, userID.(uint), username.(string), ip, ua)
+	rule, err := h.ruleService.Update(uint(id), &req, ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -81,13 +73,9 @@ func (h *RuleHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	if err = h.ruleService.Delete(uint(id), userID.(uint), username.(string), ip, ua); err != nil {
+	if err = h.ruleService.Delete(uint(id), ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent); err != nil {
 		response.HandleError(c, err)
 		return
 	}
@@ -137,13 +125,9 @@ func (h *RuleHandler) Start(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	if err = h.ruleService.Start(uint(id), userID.(uint), username.(string), ip, ua); err != nil {
+	if err = h.ruleService.Start(uint(id), ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent); err != nil {
 		response.HandleError(c, err)
 		return
 	}
@@ -159,13 +143,9 @@ func (h *RuleHandler) Stop(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	if err := h.ruleService.Stop(uint(id), userID.(uint), username.(string), ip, ua); err != nil {
+	if err = h.ruleService.Stop(uint(id), ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent); err != nil {
 		response.HandleError(c, err)
 		return
 	}

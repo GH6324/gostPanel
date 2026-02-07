@@ -29,13 +29,9 @@ func (h *TunnelHandler) Create(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	tunnel, err := h.tunnelService.Create(&req, userID.(uint), username.(string), ip, ua)
+	tunnel, err := h.tunnelService.Create(&req, ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -58,13 +54,9 @@ func (h *TunnelHandler) Update(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	tunnel, err := h.tunnelService.Update(uint(id), &req, userID.(uint), username.(string), ip, ua)
+	tunnel, err := h.tunnelService.Update(uint(id), &req, ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -81,13 +73,9 @@ func (h *TunnelHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	if err := h.tunnelService.Delete(uint(id), userID.(uint), username.(string), ip, ua); err != nil {
+	if err = h.tunnelService.Delete(uint(id), ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent); err != nil {
 		response.HandleError(c, err)
 		return
 	}
@@ -137,13 +125,9 @@ func (h *TunnelHandler) Start(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	if err := h.tunnelService.Start(uint(id), userID.(uint), username.(string), ip, ua); err != nil {
+	if err = h.tunnelService.Start(uint(id), ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent); err != nil {
 		response.HandleError(c, err)
 		return
 	}
@@ -159,13 +143,9 @@ func (h *TunnelHandler) Stop(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	username, _ := c.Get("username")
+	ctx := GetRequestContext(c)
 
-	ip := c.ClientIP()
-	ua := c.GetHeader("User-Agent")
-
-	if err := h.tunnelService.Stop(uint(id), userID.(uint), username.(string), ip, ua); err != nil {
+	if err = h.tunnelService.Stop(uint(id), ctx.UserID, ctx.Username, ctx.ClientIP, ctx.UserAgent); err != nil {
 		response.HandleError(c, err)
 		return
 	}
